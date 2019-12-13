@@ -5,10 +5,6 @@ close all;
 %Starting data
 data
 
-% VARIABLES
-% uplink balance
-C_N_u=0;
-
 
 % UPLINK balance
     % EIRP CALCULATION 
@@ -16,8 +12,7 @@ C_N_u=0;
 
         % isotropically radiated power from ground station [dB]
         EIRPes_u=Pdb_t+Gt_u
-        
-        
+            
     % FSL UPLINK BALANCE
         % The difference in longitude of the broadcasting station and the satelite location 
         longitude_diffrence_u=abs(longitude_t-longitude_s)
@@ -29,7 +24,6 @@ C_N_u=0;
 
         % Attenuation in free space towards "uplink"
         FSL_u=20*log10(4*pi*d_u*1000/l_t)
-
 
     % ATTENUATION CALCULATION
         % elevation angle
@@ -108,9 +102,9 @@ C_N_u=0;
     C_N_total=10*log10(inv(1/power(10,C_N_d/10)+1/power(10,C_N_u/10)))
     
 % TASK 3
-    E_B=10*log10(power(erfcinv(2*BER),2))
+    E_N=10*log10(power(erfcinv(2*BER),2))
 
-    tenlogRb=C_N_total+code_gain-margin-E_B
+    tenlogRb=C_N_total+code_gain-margin-E_N
     Rb=power(10,tenlogRb/10)
 
     B=Rb/O_QPSK
@@ -120,26 +114,30 @@ C_N_u=0;
     % reciever noise temp     
     Ts=G_r-G_T_r
     
-    availability_vector=99.999:-0.001:99;
+    availability_vector=99.9999:-0.00001:99.9995;
+%         availability_vector=99.995
+
      Ap_help_d=0;
      Ap_help_u=0;
      C_N_help_d=0;
      C_N_help_u=0;
      C_N_help_total=0;
-     E_B_help=0;
+     E_N_help=0;
      BER_vector=[];
-     
+     pl=[];
     for i=1:length(availability_vector)
+        
        Ap_help_d=Arain_r*0.12*power((100-availability_vector(i)),-(0.546+0.043*log10(100-availability_vector(i))));
        Ap_help_u=Arain_t*0.12*power((100-availability_vector(i)),-(0.546+0.043*log10(100-availability_vector(i))));
        C_N_help_d= EIRP_s-(FSL_d+At_r+Ap_help_d)+G_T_d-K-abs(OBO_s);
        C_N_help_u= EIRPes_u-(FSL_u+At_t+Ap_help_u)+G_T_u-K;
        C_N_help_total=10*log10(inv(1/power(10,C_N_help_d/10)+1/power(10,C_N_help_u/10)));
-       E_B_help=C_N_help_total-Rb+code_gain-margin;
-       BER_vector(i)=1/2*erfc(E_B_help);
+       E_N_help=power(10,(C_N_help_total-tenlogRb+code_gain-margin)/10);
+       BER_vector(i)=1/2*erfc(sqrt(E_N_help));
+       pl(i)=   Ap_help_u;
     end
     figure
-    plot(BER_vector)
+    plot(availability_vector,  BER_vector)
     
      
    

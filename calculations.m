@@ -5,10 +5,6 @@ close all;
 %Starting data
 data
 
-% VARIABLES
-% uplink balance
-C_N_u=0;
-
 
 % UPLINK balance
     % EIRP CALCULATION 
@@ -16,8 +12,7 @@ C_N_u=0;
 
         % isotropically radiated power from ground station [dB]
         EIRPes_u=Pdb_t+Gt_u
-        
-        
+            
     % FSL UPLINK BALANCE
         % The difference in longitude of the broadcasting station and the satelite location 
         longitude_diffrence_u=abs(longitude_t-longitude_s)
@@ -29,7 +24,6 @@ C_N_u=0;
 
         % Attenuation in free space towards "uplink"
         FSL_u=20*log10(4*pi*d_u*1000/l_t)
-
 
     % ATTENUATION CALCULATION
         % elevation angle
@@ -58,9 +52,7 @@ C_N_u=0;
 
     % C/N UPLINK
        C_N_u= EIRPes_u-(FSL_u+At_t+Ap_u)+G_T_u-K
-       
-
-       
+              
 % DOWNLINK balance            
     % FSL DOWNLINK BALANCE
         % The difference in longitude of the broadcasting station and the satelite location 
