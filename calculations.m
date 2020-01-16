@@ -41,6 +41,7 @@ data
         % signal distance in rain
         Ls_u=(hr_u-height_t/1000)/sin(E_u/180*pi)
         
+        Le_u=Ls_u*90/(90+4*5.10*cos(E_u/180*pi))
         % reduction constant
         r_u=90/(90+4*Ls_u*cos(E_u/180*pi))         
         
@@ -81,9 +82,12 @@ data
             hr_d=4-0.075*(latitude_r-36)
         end
         
+       
         % signal distance in rain
         Ls_d=(hr_d-height_r/1000)/sin(E_d/180*pi)
         
+        % effective disctance
+         Le_d=Ls_d*90/(90+4*5.10*cos(E_d/180*pi))
         % reduction constant
         r_d=90/(90+4*Ls_d*cos(E_d/180*pi))         
         
@@ -94,7 +98,7 @@ data
         Ap_d=Arain_r*0.12*power((100-availability),-(0.546+0.043*log10(100-availability)))
 
     % C/N DOWNLINK
-       C_N_d= EIRP_s-(FSL_d+At_r+Ap_d)+G_T_d-K-abs(OBO_s)
+       C_N_d= EIRP_s-(FSL_d+At_r+Ap_d)+G_T_r-K-abs(OBO_s)
 
     % C/N TOTAL
     C_N_total=10*log10(inv(1/power(10,C_N_d/10)+1/power(10,C_N_u/10)))
@@ -113,7 +117,7 @@ data
     Ts=G_r-G_T_r
     
     availability_vector=99.9999:-0.00001:99.9995;
-%         availability_vector=99.995
+%         availability_vector=99.992
 
      Ap_help_d=0;
      Ap_help_u=0;
@@ -124,6 +128,7 @@ data
      BER_vector=[];
      pl=[];
     for i=1:length(availability_vector)
+        
         
        Ap_help_d=Arain_r*0.12*power((100-availability_vector(i)),-(0.546+0.043*log10(100-availability_vector(i))));
        Ap_help_u=Arain_t*0.12*power((100-availability_vector(i)),-(0.546+0.043*log10(100-availability_vector(i))));
